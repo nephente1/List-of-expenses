@@ -1,4 +1,4 @@
-# React Weather App
+# React List of expenses
 
 #start project locally
 ```
