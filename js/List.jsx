@@ -8,7 +8,7 @@ class List extends React.Component{
             eurVal: "4.382",
             inputTitle: "",
             inputPln: null,
-            inputEur: null
+            inputEur: 'null'
         }
     }
 
@@ -43,7 +43,8 @@ class List extends React.Component{
         let  amountEUR = document.createElement("div");
         amountEUR.className = "amountEUR";
         row.appendChild(amountEUR);
-        amountEUR.innerHTML = this.state.inputEur;
+        let euroSum = (this.state.inputPln / this.state.eurVal).toFixed(2);
+        amountEUR.innerHTML = euroSum;
 
         let deleteBtn = document.createElement("button");
         deleteBtn.className = "deleteButton";
@@ -51,6 +52,7 @@ class List extends React.Component{
         deleteBtn.innerText = "delete";
 
         document.querySelector('.table').appendChild(row);
+
 
         let input = document.querySelector('input');
         input.value = '';
