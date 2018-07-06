@@ -101,8 +101,7 @@ class List extends React.Component{
         }
 
         let stateSums = [...arr];
-        console.log(stateSums.reduce((a,b)=>a+b, 0) )
-        console.log(stateSums);
+        console.log("stateSums: "+stateSums);
         this.setState({
             sum: stateSums.reduce((a,b)=>a+b, 0)
         })
@@ -123,9 +122,10 @@ class List extends React.Component{
         deleteBtn.addEventListener('click', () => {
             document.querySelector('.table').removeChild(row);
             stateSums.pop();
-
+            stateSumsEur.pop()
                 this.setState({
-                    sum: stateSums.reduce((a,b)=>a+b, 0)
+                    sum: stateSums.reduce((a,b)=>a+b, 0),
+                    sumEur: stateSumsEur.reduce((a,b)=>a+b, 0)
                 })    
               })  
           }
@@ -138,7 +138,7 @@ class List extends React.Component{
         <div className="inputs">
             <h1>List of expenses</h1>
             <div className="error-message"></div>
-            <label>1 EUR =
+            <label>Type value: 1 EUR
             <input onChange={this.handleChangeValue} type="text" value={this.state.eurVal}/>
             </label>
             
