@@ -93,8 +93,8 @@ class List extends React.Component{
         document.querySelector('.table').appendChild(row);
         
         //counting the sum of PLN
-        var sumPLN = document.querySelectorAll('.amountPLN');
-        var arr = [];
+        let sumPLN = document.querySelectorAll('.amountPLN');
+        let arr = [];
         for(let i = 0; i < sumPLN.length; i++){
             arr.push(parseFloat(sumPLN[i].innerText))
             console.log("tablica: "+arr);
@@ -107,8 +107,8 @@ class List extends React.Component{
         })
         
         //counting the sum of EUR
-        var sumEUR = document.querySelectorAll('.amountEUR');
-        var arr2 = [];
+        let sumEUR = document.querySelectorAll('.amountEUR');
+        let arr2 = [];
         for(let i = 0; i < sumEUR.length; i++){
             arr2.push(parseFloat(sumEUR[i].innerText))
         }
@@ -125,7 +125,7 @@ class List extends React.Component{
             stateSumsEur.pop()
                 this.setState({
                     sum: stateSums.reduce((a,b)=>a+b, 0),
-                    sumEur: stateSumsEur.reduce((a,b)=>a+b, 0)
+                    sumEur: stateSumsEur.reduce((a,b)=>a+b, 0).toFixed(2)
                 })    
               })  
           }
