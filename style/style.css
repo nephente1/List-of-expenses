@@ -9,6 +9,8 @@
 body{
   display:flex;
   justify-content: center;
+  background: url('/style/img/bg-geo.jpg');
+  background-repeat: repeat;
 }
 
 .inputs{
@@ -43,7 +45,7 @@ label{
   button {
     border: 0px;
     padding: 10px 15px;
-    background: #0ab83e;
+    background: #b8e748;
     color: white;
     box-shadow: 0px 0px 15px 0px #797979;
     font-size: 24px;
@@ -56,7 +58,7 @@ label{
   }
   
   button:hover{
-    background: #a7d341;
+    background: #c0ee56;
   }
 
   .tableHeader{
@@ -77,10 +79,10 @@ label{
   .title{
     min-width:200px;
   }
-  .amountPLN{
+  .amountPLN, .amountPLNHead{
     min-width:160px;
   }
-  .amountEUR{
+  .amountEUR, .amountEURHead{
     min-width:160px;
   }
   .optionCell{
