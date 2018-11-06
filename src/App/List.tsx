@@ -1,52 +1,70 @@
 import * as React from 'react';
+import {observable} from "mobx";
+import {observer} from "mobx-react";
 
-interface PropsType {
+
+// interface StateType {
+//     eurVal: string,
+//     inputTitle: string,
+//     inputPln: string,
+//     inputEur: string,
+//     sum: Array<number>,
+//     sumEur: Array<number>,
+// }
+
+interface ListPropsType {
+    //values: () => void
+//    inputPln:number,
+//    inputEur:number
 }
 
-interface StateType {
-    eurVal: string,
-    inputTitle: string,
-    inputPln: string,
-    inputEur: string,
-    sum: Array<number>,
-    sumEur: Array<number>,
-}
+@observer
+export class List extends React.Component<ListPropsType> {
+    
+    @observable inputEur:number = 0;
+    @observable inputPln:number = 0;
+    @observable sumEur:number = 0;
+    @observable sumPln:number = 0;
+    @observable arrayEur:Array<number> = [];
+    @observable arrayPln:Array<number> = [];
 
-export class List extends React.Component<PropsType, StateType> {
-    constructor(props: PropsType){
-        super(props);
-        this.state = {
-            eurVal: '4.382',
-            inputTitle: '',
-            inputPln: '',
-            inputEur: '',
-            sum: [],
-            sumEur: []
-        }
+    
+
+    handleClick = () => {
+        //const list:Array<string> = [];
+        this.arrayEur.push(this.inputEur);
+        this.sumEur = this.arrayEur.reduce((a , b )=> a + b, 0);
+        this.arrayPln.push(this.inputPln);
+        this.sumPln = this.arrayPln.reduce((a , b )=> a + b, 0);
+        console.log("arrayPLN",this.arrayPln);
+        this.renderRow();
     }
+
+//             eurVal: '4.382',
+//             inputTitle: '',
+//             inputPln: '',
+//             inputEur: '',
+//             sum: [],
+//             sumEur: []
+
 
     handleChangeValue = (e: React.FormEvent<HTMLInputElement>) => {
-        let eurVal = e.currentTarget.value;
-        this.setState({
-            eurVal: eurVal
-        })
+        let eurValFromInput = e.currentTarget.value;
+        this.inputEur = parseFloat(eurValFromInput);
     }
 
-    handleChangeTitle = (e: React.FormEvent<HTMLInputElement>) =>{
-        let inputTitle = e.currentTarget.value;
-        this.setState({
-            inputTitle: inputTitle
-        })
-    }
+    // handleChangeTitle = (e: React.FormEvent<HTMLInputElement>) =>{
+    //     // let inputTitle = e.currentTarget.value;
+    //     // this.inputTitle;
+    // }
 
     handleChangeAmount = (e: React.FormEvent<HTMLInputElement>) =>{
-        let inputPln = e.currentTarget.value;
-        this.setState({
-            inputPln: inputPln
-        })
+        let plnValFromInput = e.currentTarget.value;
+        this.inputPln = parseFloat(plnValFromInput);
+        
     }
 
-    handleClick = () => {     
+    //handleClick = () => {     
                                         //TODO
         /*
         let errors = [];
@@ -142,25 +160,43 @@ export class List extends React.Component<PropsType, StateType> {
               })  
           }
           */
-        } //close if statement
+       // } //close if statement
+       renderRow = () => {
+        
+        const a = this.arrayEur.map((el, i) =>
+        <div className="amountEUR">
+            <li key = { `el-${i}`}> {el} </li>
+        </div>
+        );
+        const b = this.arrayPln.map((el, i) =>
+        <div className="amountPLN">
+            <li key = { `el-${i}`}> {el} </li>
+        </div>
+        )
+        const arrays = [...a,...b];
+        return arrays;
+       }
 
     render(){
         
         return (
         <div>
+            <div>this props item{ this.inputPln }</div>
+
         <div className="inputs">
             <h1>List of expenses</h1>
             <div className="error-message"></div>
-            <label>Type value: 1 EUR
-            <input onChange={this.handleChangeValue} type="text" value={this.state.eurVal}/>
-            </label>
             
-            <label>Title of transaction
+            <label>Type value: 1 EUR
+            <input onChange={this.handleChangeValue} type="number" min="0" />
+            </label>
+             
+            {/* <label>Title of transaction
             <input onChange={this.handleChangeTitle} type="text" value={this.state.inputTitle}/>
-            </label>
+            </label> */}
             <label>Amount ( in PLN )
-            <input onChange={this.handleChangeAmount} type="text" value={this.state.inputPln}/>
-            </label>
+            <input onChange={this.handleChangeAmount} type="number" min="0" />
+            </label> 
             <button onClick={this.handleClick}>ADD</button>
         </div>
         <div className="table">
@@ -171,11 +207,16 @@ export class List extends React.Component<PropsType, StateType> {
                 <div className="optionCell">Options</div>
             </div>
         </div>  
-            <h2>Sum: {this.state.sum} PLN / {this.state.sumEur} EUR </h2>
+        <div>  
+                { this.renderRow  }
+            </div> 
+        <h2>{this.sumEur}{this.sumPln}</h2>
+            {/* <h2>Sum: {this.state.sum} PLN / {this.state.sumEur} EUR </h2> */}
             
         </div>
-        )
+        )   
     }
+
 }
 
 export default List;
