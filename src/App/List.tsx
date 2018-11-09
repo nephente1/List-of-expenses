@@ -13,6 +13,7 @@ import {observer} from "mobx-react";
 // }
 
 interface Row {
+    id: number,
     title: string,
     amountPLN: number,
 }
@@ -31,17 +32,28 @@ export class List extends React.Component {
     @observable sumAllEuro:number = 0;
 
     @observable list: Array<Row>
+    @observable licznik: number = 0;
 
     constructor(props:Row) {
         super(props);
         this.list = [];
+        //this.licznik = 0;
     }
+
+    setLicznik = () => {
+        this.licznik++;
+        
+    }
+    
 
     handleClick = () => {
         this.list.push({
             title: this.inputTitle,
-            amountPLN: this.inputPln
+            amountPLN: this.inputPln,
+            id: this.licznik++
         });
+        this.setLicznik;
+        console.log('licznik',this.licznik);
 
         this.arrayEur.push(this.inputEur);
         this.sumEur = this.arrayEur.reduce((a , b )=> a + b, 0);
@@ -80,11 +92,14 @@ export class List extends React.Component {
     }
 
     renderRow = (row: Row) => {
+        console.log('row id',row.id)
         return (
+            
             <div className="rows">
+                {row.id}
                 <div className="title">{ row.title }</div>
                 <div className="amountPLN">{ row.amountPLN }</div>
-                <div className="amountEUR">{ this.renderEuro(row.amountPLN) }</div>
+                <div className="amountEUR">{ this.renderEuro(row.amountPLN ) }</div>
                 <button className="deleteButton">Delete</button>
             </div>
         );
