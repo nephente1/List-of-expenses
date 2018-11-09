@@ -2,15 +2,51 @@ import * as React from 'react';
 import {observable} from "mobx";
 import {observer} from "mobx-react";
 
+interface RowDataPropsType {
+    rowTitle:string, 
+    rowAmountPln:number,
+    rowAmountEur:number | string, 
+    rowID:number,
+    list: Array<Row>,
+    sumaEuro: () => void
+}
 
-// interface StateType {
-//     eurVal: string,
-//     inputTitle: string,
-//     inputPln: string,
-//     inputEur: string,
-//     sum: Array<number>,
-//     sumEur: Array<number>,
-// }
+@observer 
+class RowData extends React.Component <RowDataPropsType>{
+    render(){
+        <div>{this.props.rowID}</div>
+        console.log(this.props.rowID)
+        return (
+            <div className="rows">
+                <div className="title">{ this.props.rowTitle}</div>
+                <div className="amountPLN">{ this.props.rowAmountPln }</div>
+                <div className="amountEUR">{ this.props.rowAmountEur }</div>
+                <button className="deleteButton"  onClick={this.handleDelete}>Delete</button>
+            </div>
+        );
+    }
+
+    filtrTablicy = () => {
+        for(let i=0; i < this.props.list.length; i++){
+            if(this.props.list[i].id === this.props.rowID){
+                this.props.list.splice(this.props.rowID,1)
+                this.props.sumaEuro();
+                return(
+                    console.log('z filtra',this.props.list)
+                )
+            }
+        }
+    }
+
+    handleDelete = () => {
+        this.filtrTablicy();
+        
+        console.log(this.props.rowID)
+        console.log('list z buttona',this.props.list[0].id, this.props.list[1].id )
+    }
+}
+
+
 
 interface Row {
     id: number,
@@ -37,12 +73,10 @@ export class List extends React.Component {
     constructor(props:Row) {
         super(props);
         this.list = [];
-        //this.licznik = 0;
     }
 
     setLicznik = () => {
         this.licznik++;
-        
     }
     
 
@@ -63,8 +97,11 @@ export class List extends React.Component {
 
         this.arrayPln.push(this.inputPln);
         this.sumPln = this.arrayPln.reduce((a , b )=> a + b, 0);
-
-        this.sumAllEuro = this.sumPln / this.inputEur;
+        this.sumaEuro();
+        
+    }
+    sumaEuro = () => {
+    this.sumAllEuro = parseFloat( (this.sumPln / this.inputEur).toFixed(2) );
     }
 
 //             eurVal: '4.382',
@@ -88,26 +125,26 @@ export class List extends React.Component {
         this.inputPln = parseFloat(plnValFromInput);
     }
     renderList() {
-        return this.list.map(this.renderRow);
+        const tablica = this.list.map(this.renderRow);
+        console.log(this.list);
+        return tablica;
+        
     }
 
     renderRow = (row: Row) => {
-        console.log('row id',row.id)
-        return (
-            
-            <div className="rows">
-                {row.id}
-                <div className="title">{ row.title }</div>
-                <div className="amountPLN">{ row.amountPLN }</div>
-                <div className="amountEUR">{ this.renderEuro(row.amountPLN ) }</div>
-                <button className="deleteButton">Delete</button>
-            </div>
-        );
+        const rowID = row.id;
+        console.log('row id',rowID)
+        {rowID}
+        return(
+        <RowData sumaEuro={this.sumaEuro} list={this.list} rowTitle={row.title} rowAmountPln={row.amountPLN} rowAmountEur={this.renderEuro(row.amountPLN).toFixed(2)} rowID={rowID}/>)
+
     };
 
     renderEuro(amountPLN: number): number {
         return amountPLN / this.inputEur;
     }
+
+    
 
     //handleClick = () => {     
                                         //TODO
@@ -219,7 +256,6 @@ export class List extends React.Component {
         <div className="inputs">
             <h1>List of expenses</h1>
             <div className="error-message"></div>
-            
             <label>Type value: 1 EUR
             <input onChange={this.handleChangeValue} type="number" min="0" value={this.inputEur} />
             </label>
