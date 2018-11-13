@@ -7,46 +7,32 @@ interface RowDataPropsType {
     rowAmountPln:number,
     rowAmountEur:number | string, 
     rowID:number,
+    key: number,
     list: Array<Row>,
-    sumaEuro: () => void
+    //sumaEuro: () => void
+    handleDelete:(id: number) => void
 }
 
 @observer 
 class RowData extends React.Component <RowDataPropsType>{
     render(){
-        <div>{this.props.rowID}</div>
-        console.log(this.props.rowID)
+        console.log('id z rzędu',this.props.rowID)
         return (
             <div className="rows">
                 <div className="title">{ this.props.rowTitle}</div>
                 <div className="amountPLN">{ this.props.rowAmountPln }</div>
                 <div className="amountEUR">{ this.props.rowAmountEur }</div>
-                <button className="deleteButton"  onClick={this.handleDelete}>Delete</button>
+                <button className="deleteButton"  onClick={this.onHandleDelete}>Delete</button>
             </div>
         );
     }
 
-    filtrTablicy = () => {
-        for(let i=0; i < this.props.list.length; i++){
-            if(this.props.list[i].id === this.props.rowID){
-                this.props.list.splice(this.props.rowID,1)
-                this.props.sumaEuro();
-                return(
-                    console.log('z filtra',this.props.list)
-                )
-            }
-        }
-    }
-
-    handleDelete = () => {
-        this.filtrTablicy();
-        
-        console.log(this.props.rowID)
-        console.log('list z buttona',this.props.list[0].id, this.props.list[1].id )
+    onHandleDelete = () => {
+        const {rowID, handleDelete } = this.props;
+        handleDelete(rowID)
+        console.log('onHandleDelete',this.props.rowID)
     }
 }
-
-
 
 interface Row {
     id: number,
@@ -75,25 +61,18 @@ export class List extends React.Component {
         this.list = [];
     }
 
-    setLicznik = () => {
-        this.licznik++;
-    }
-    
-
     handleClick = () => {
         this.list.push({
             title: this.inputTitle,
             amountPLN: this.inputPln,
             id: this.licznik++
         });
-        this.setLicznik;
-        console.log('licznik',this.licznik);
 
         this.arrayEur.push(this.inputEur);
         this.sumEur = this.arrayEur.reduce((a , b )=> a + b, 0);
 
         this.arrayTitle.push(this.inputTitle);
-        console.log(this.inputTitle);
+
 
         this.arrayPln.push(this.inputPln);
         this.sumPln = this.arrayPln.reduce((a , b )=> a + b, 0);
@@ -103,13 +82,6 @@ export class List extends React.Component {
     sumaEuro = () => {
     this.sumAllEuro = parseFloat( (this.sumPln / this.inputEur).toFixed(2) );
     }
-
-//             eurVal: '4.382',
-//             inputTitle: '',
-//             inputPln: '',
-//             inputEur: '',
-//             sum: [],
-//             sumEur: []
 
     handleChangeValue = (e: React.FormEvent<HTMLInputElement>) => {
         let eurValFromInput = e.currentTarget.value;
@@ -126,27 +98,84 @@ export class List extends React.Component {
     }
     renderList() {
         const tablica = this.list.map(this.renderRow);
-        console.log(this.list);
         return tablica;
-        
     }
-
-    renderRow = (row: Row) => {
-        const rowID = row.id;
-        console.log('row id',rowID)
-        {rowID}
-        return(
-        <RowData sumaEuro={this.sumaEuro} list={this.list} rowTitle={row.title} rowAmountPln={row.amountPLN} rowAmountEur={this.renderEuro(row.amountPLN).toFixed(2)} rowID={rowID}/>)
-
-    };
-
     renderEuro(amountPLN: number): number {
         return amountPLN / this.inputEur;
     }
 
-    
+    renderRow = (row: Row) => {
+        const rowID = row.id;
+        //if( rowID )
+        return(
+            <RowData 
+                //sumaEuro={this.sumaEuro} 
+                list={this.list} 
+                rowTitle={row.title} 
+                rowAmountPln={row.amountPLN} 
+                rowAmountEur={this.renderEuro(row.amountPLN).toFixed(2)} 
+                rowID={rowID}
+                handleDelete={this.handleDelete}
+                key={rowID} />)
+    };
 
-    //handleClick = () => {     
+    handleDelete = (idToDelete: number ) => {
+        console.log("nacisniety", idToDelete);
+
+        const currentList = this.list; //pobieram
+        const newList = currentList.filter(  //modyfikuje
+            (item) => item.id !== idToDelete
+        );
+        this.list = newList; //zwracam nowa liste
+        /*
+        this.list = this.list.filter(
+            (item) => item.id !== idToDelete
+        )
+            */
+    
+        console.log(this.list)
+    }
+
+    render(){
+        return (
+        <div>
+        <div className="inputs">
+            <h1>List of expenses</h1>
+            <div className="error-message"></div>
+            <label>Type value: 1 EUR
+            <input onChange={this.handleChangeValue} type="number" min="0" value={this.inputEur} />
+            </label>
+             
+            <label>Title of transaction
+            <input onChange={this.handleChangeTitle} type="text" value={this.inputTitle}/>
+            </label>
+            <label>Amount ( in PLN )
+            <input onChange={this.handleChangeAmount} type="number" min="0" />
+            </label> 
+            <button onClick={this.handleClick}>ADD</button>
+        </div>
+        <div className="table">
+            <div className="tableHeader">
+                <div className="title">Title</div>
+                <div className="amountPLNHead">Amount (PLN)</div>
+                <div className="amountEURHead">Amount (EUR)</div>
+                <div className="optionCell">Options</div>
+            </div>
+        </div>  
+            <div>  
+                { this.renderList()  }
+            </div> 
+        <h2>{this.sumAllEuro}</h2>
+            
+    </div>
+        )   
+    }
+
+}
+
+export default List;
+
+ //handleClick = () => {     
                                         //TODO
         /*
         let errors = [];
@@ -249,42 +278,3 @@ export class List extends React.Component {
     //         <li key = { `el-${i}`}> {el} </li>
     //     </div>
     //     );}
-
-    render(){
-        return (
-        <div>
-        <div className="inputs">
-            <h1>List of expenses</h1>
-            <div className="error-message"></div>
-            <label>Type value: 1 EUR
-            <input onChange={this.handleChangeValue} type="number" min="0" value={this.inputEur} />
-            </label>
-             
-            <label>Title of transaction
-            <input onChange={this.handleChangeTitle} type="text" value={this.inputTitle}/>
-            </label>
-            <label>Amount ( in PLN )
-            <input onChange={this.handleChangeAmount} type="number" min="0" />
-            </label> 
-            <button onClick={this.handleClick}>ADD</button>
-        </div>
-        <div className="table">
-            <div className="tableHeader">
-                <div className="title">Title</div>
-                <div className="amountPLNHead">Amount (PLN)</div>
-                <div className="amountEURHead">Amount (EUR)</div>
-                <div className="optionCell">Options</div>
-            </div>
-        </div>  
-            <div>  
-                { this.renderList()  }
-            </div> 
-        <h2>{this.sumAllEuro}</h2>
-            
-    </div>
-        )   
-    }
-
-}
-
-export default List;
