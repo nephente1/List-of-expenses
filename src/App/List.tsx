@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {observable} from "mobx";
+import {observable, computed} from "mobx";
 import {observer} from "mobx-react";
 
 interface RowDataPropsType {
@@ -9,14 +9,12 @@ interface RowDataPropsType {
     rowID:number,
     key: number,
     list: Array<Row>,
-    //sumaEuro: () => void
     handleDelete:(id: number) => void
 }
 
 @observer 
 class RowData extends React.Component <RowDataPropsType>{
     render(){
-        console.log('id z rzędu',this.props.rowID)
         return (
             <div className="rows">
                 <div className="title">{ this.props.rowTitle}</div>
@@ -30,7 +28,6 @@ class RowData extends React.Component <RowDataPropsType>{
     onHandleDelete = () => {
         const {rowID, handleDelete } = this.props;
         handleDelete(rowID)
-        console.log('onHandleDelete',this.props.rowID)
     }
 }
 
@@ -40,18 +37,23 @@ interface Row {
     amountPLN: number,
 }
 
+/*interface ArrayPln {
+    inputPln: number,
+    idPln: number
+}*/
+
 @observer
 export class List extends React.Component {
     
     @observable inputEur:number = 4.382;
     @observable inputPln:number = 0;
-    @observable sumEur:number = 0;
-    @observable sumPln:number = 0;
-    @observable arrayEur:Array<number> = [];
-    @observable arrayPln:Array<number> = [];
+    //@observable sumEur:number = 0;
+    //@observable sumPln:number = 0;
+    //@observable arrayEur:Array<number> = [];
+    //@observable arrayPln: Array<ArrayPln> = [];
     @observable inputTitle: string = '';
-    @observable arrayTitle:Array<string> = [];
-    @observable sumAllEuro:number = 0;
+    //@observable arrayTitle:Array<string> = [];
+    //@observable sumAllEuro:number = 0;
 
     @observable list: Array<Row>
     @observable licznik: number = 0;
@@ -68,20 +70,39 @@ export class List extends React.Component {
             id: this.licznik++
         });
 
-        this.arrayEur.push(this.inputEur);
-        this.sumEur = this.arrayEur.reduce((a , b )=> a + b, 0);
+        ///this.arrayEur.push(this.inputEur);
+        //this.sumEur = this.arrayEur.reduce((a , b )=> a + b, 0);
 
-        this.arrayTitle.push(this.inputTitle);
+        //this.arrayTitle.push(this.inputTitle);
 
-
-        this.arrayPln.push(this.inputPln);
-        this.sumPln = this.arrayPln.reduce((a , b )=> a + b, 0);
-        this.sumaEuro();
+        /*this.arrayPln.push({
+            inputPln: this.inputPln,
+            idPln: this.licznik++
+        });*/
+            
+        //this.sumPln=this.arrayPln.map(x => x.inputPln).reduce((a , b )=> a + b, 0);
+        //this.sumaPln();
+        
+        //console.log('this.sumPln',this.sumPln)
         
     }
-    sumaEuro = () => {
-    this.sumAllEuro = parseFloat( (this.sumPln / this.inputEur).toFixed(2) );
+
+    @computed get sumaPln() {
+        let sum = 0;
+        for (const item of this.list) {
+            sum = sum + item.amountPLN;
+        }
+        return sum;
+        //return this.arrayPln.map(x => x.inputPln).reduce((a , b )=> a + b, 0);
     }
+
+    @computed get sumAllEuro() {
+        return parseFloat( (this.sumaPln / this.inputEur).toFixed(2) );
+    }
+
+    // sumaEuro = () => {
+    // this.sumAllEuro = parseFloat( (this.sumPln / this.inputEur).toFixed(2) );
+    // }
 
     handleChangeValue = (e: React.FormEvent<HTMLInputElement>) => {
         let eurValFromInput = e.currentTarget.value;
@@ -106,10 +127,8 @@ export class List extends React.Component {
 
     renderRow = (row: Row) => {
         const rowID = row.id;
-        //if( rowID )
         return(
             <RowData 
-                //sumaEuro={this.sumaEuro} 
                 list={this.list} 
                 rowTitle={row.title} 
                 rowAmountPln={row.amountPLN} 
@@ -120,23 +139,24 @@ export class List extends React.Component {
     };
 
     handleDelete = (idToDelete: number ) => {
-        console.log("nacisniety", idToDelete);
-
-        const currentList = this.list; //pobieram
-        const newList = currentList.filter(  //modyfikuje
+        const newList = this.list.filter(  //modyfikuje
             (item) => item.id !== idToDelete
-        );
+            );
         this.list = newList; //zwracam nowa liste
-        /*
-        this.list = this.list.filter(
-            (item) => item.id !== idToDelete
-        )
-            */
-    
-        console.log(this.list)
+        
+        //const newArrayPln = newList.filter( (el) => el.id !== idToDelete);
+        
+        //this.sumaPln();
+        
+        //this.sumPln = newArrayPln.map( (el) => el.amountPLN ).reduce((a , b )=> a + b, 0);
+        //console.log('del',this.sumPln )
+        //this.sumAllEuro = parseFloat( (this.sumPln / this.inputEur).toFixed(2) );
+        
+        console.log('this.sumAllEuro',this.sumAllEuro)
     }
 
     render(){
+        
         return (
         <div>
         <div className="inputs">
