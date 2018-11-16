@@ -156,14 +156,14 @@ export class List extends React.Component {
                     { this.renderError() }
                     
                     <label>Type value: 1 EUR
-                    <input onChange={this.handleChangeValue} type="number" min="0" value={this.inputEur} />
+                        <input onChange={this.handleChangeValue} type="number" min="0" value={this.inputEur} />
                     </label>
                     
                     <label>Title of transaction
-                    <input onChange={this.handleChangeTitle} type="text" value={this.inputTitle}/>
+                        <input onChange={this.handleChangeTitle} type="text" value={this.inputTitle}/>
                     </label>
                     <label>Amount ( in PLN )
-                    <input onChange={this.handleChangeAmount} type="number" value={this.inputPln} />
+                        <input onChange={this.handleChangeAmount} type="number" value={this.inputPln} />
                     </label> 
                     <button onClick={this.handleClick}>ADD</button>
                 </div>
