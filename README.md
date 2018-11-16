@@ -3,8 +3,7 @@
 #start project locally
 ```
 bash / cmd
-yarn dev
-yarn watch
+yarn run dev
 ```
-
-// "dev": "del -Rf dist && yarn run webpack --config ./webpack/webpack.js --mode development && ./src/index.html ./dist/" //for windows
+* scripts - dev in package.json for windows *
+// "dev": "del -Rf dist && yarn run webpack --config ./webpack/webpack.js --mode development && ./src/index.html ./dist/" 
