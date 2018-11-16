@@ -89,4 +89,10 @@ label{
   .optionCell{
     min-width:100px;
   }
+
+  .errors{
+    color: white;
+    background: red;
+    padding: 5px 10px;
+  }
   
